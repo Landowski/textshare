@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Textshare - App</title>
+  <link rel="stylesheet" href="assets/app.css" />
+  <script type="module" src="assets/app.js" defer></script>
+</head>
+<body>
+  <div id="sidebar">
+    <button id="new-note">Nova Nota</button>
+    <div id="notes-list"></div>
+  </div>
+  <div id="main">
+    <div id="home">Bem-vindo ao Textshare!</div>
+    <div id="editor" style="display:none;">
+      <input type="text" id="note-title" placeholder="Título da Nota" />
+      <textarea id="note-content"></textarea>
+      <div>
+        <label><input type="checkbox" id="public-toggle" /> Público</label>
+        <button id="delete-note">🗑️</button>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
