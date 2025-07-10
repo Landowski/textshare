@@ -39,6 +39,7 @@ const newNoteBtn = document.getElementById("new-note");
 newNoteBtn.addEventListener("click", async () => {
   const notesCol = collection(db, "users", user.uid, "notes");
   const docRef = await addDoc(notesCol, {
+    titulo: `Nota ${Math.random().toString(36).substring(2, 7)}`,
     texto: "",
     publica: !isPro
   });
