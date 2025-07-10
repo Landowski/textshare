@@ -1,1 +1,7 @@
-body { font-family: sans-serif; max-width: 800px; margin: 2rem auto; padding: 1rem; }
+body {
+  font-family: sans-serif;
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 1rem;
+  background: #f9f9f9;
+}

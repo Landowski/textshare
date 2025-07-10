@@ -1,1 +1,33 @@
-body { display: flex; margin: 0; height: 100vh; font-family: sans-serif; } #sidebar { width: 200px; background: #eee; padding: 1rem; } #main { flex: 1; padding: 2rem; } #notes-list { margin-top: 1rem; }
+body {
+  display: flex;
+  margin: 0;
+  height: 100vh;
+  font-family: sans-serif;
+}
+
+#sidebar {
+  width: 200px;
+  background: #eee;
+  padding: 1rem;
+  overflow-y: auto;
+}
+
+#main {
+  flex: 1;
+  padding: 2rem;
+}
+
+#notes-list {
+  margin-top: 1rem;
+}
+
+#notes-list div {
+  padding: 0.5rem;
+  cursor: pointer;
+}
+
+#editor textarea {
+  width: 100%;
+  height: 300px;
+  margin-bottom: 1rem;
+}
