@@ -81,7 +81,7 @@ async function openNote(id) {
   document.getElementById("public-toggle").checked = note.publica;
   document.getElementById("public-toggle").disabled = !isPro;
 
-  const shareLink = `${window.location.origin}/pagina.html?uid=${user.uid}&nid=${id}`;
+  const shareLink = `${window.location.origin}/textshare/p.html?id=${id}`;
   document.getElementById("share-link").innerHTML = `<a href="${shareLink}" target="_blank">${shareLink}</a>`;
 }
 
