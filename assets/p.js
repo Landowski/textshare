@@ -59,7 +59,9 @@ async function loadNote() {
     document.getElementById("note-title").textContent = note.titulo || "Sem título";
     document.getElementById("content").textContent = note.texto || "";
 
-  } 
+  } catch (error) {
+    document.body.innerHTML = "<p>Esta nota é privada.</p>";
+  }
 }
 
 loadNote();
