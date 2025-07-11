@@ -44,7 +44,6 @@ newNoteBtn.addEventListener("click", async () => {
     publica: !isPro,
     userId: user.uid
   });
-  const docRef = await addDoc(notesCol, newNote);
 
   // 👇 Cria também o index auxiliar
   const notesIndexRef = doc(db, "notesIndex", docRef.id);
