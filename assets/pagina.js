@@ -30,6 +30,7 @@ if (!userSnap.exists() || !noteSnap.exists()) {
   const note = noteSnap.data();
 
   if (note.publica || !user.assinante) {
+    document.getElementById("note-title").textContent = note.titulo || "Sem título";
     document.getElementById("content").textContent = note.texto;
   } else {
     document.getElementById("content").innerHTML = "<p>Esta nota é privada.</p>";
