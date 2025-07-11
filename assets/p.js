@@ -55,6 +55,7 @@ async function loadNote() {
     }
 
     // 4️⃣ Mostra título + conteúdo
+    document.title = note.titulo || "Sem título";
     document.getElementById("note-title").textContent = note.titulo || "Sem título";
     document.getElementById("content").textContent = note.texto || "";
 
