@@ -41,7 +41,8 @@ newNoteBtn.addEventListener("click", async () => {
   const docRef = await addDoc(notesCol, {
     titulo: `Nota ${Math.random().toString(36).substring(2, 7)}`,
     texto: "",
-    publica: !isPro
+    publica: !isPro,
+    userId: user.uid
   });
   loadNotes();
   openNote(docRef.id);
