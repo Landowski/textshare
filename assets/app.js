@@ -1,6 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
-import { getFirestore, doc, getDoc, collection, addDoc, getDocs, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+import { getFirestore, doc, getDoc, collection, addDoc, setDoc, getDocs, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
 // 🔥 CONFIGURE SEUS DADOS!
 const firebaseConfig = {
@@ -42,6 +42,13 @@ newNoteBtn.addEventListener("click", async () => {
     titulo: `Nota ${Math.random().toString(36).substring(2, 7)}`,
     texto: "",
     publica: !isPro,
+    userId: user.uid
+  });
+  const docRef = await addDoc(notesCol, newNote);
+
+  // 👇 Cria também o index auxiliar
+  const notesIndexRef = doc(db, "notesIndex", docRef.id);
+  await setDoc(notesIndexRef, {
     userId: user.uid
   });
   loadNotes();
