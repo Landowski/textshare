@@ -16,8 +16,8 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 // 👉 Pega o {noteId} da URL no formato /p/{noteId}
-const path = window.location.pathname.split('/');
-const noteId = path.length >= 3 ? path[2] : null;
+const params = new URLSearchParams(window.location.search);
+const noteId = params.get('id');
 
 if (!noteId) {
   document.body.innerHTML = "<p>ID da nota não encontrado na URL.</p>";
