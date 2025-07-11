@@ -59,10 +59,7 @@ async function loadNote() {
     document.getElementById("note-title").textContent = note.titulo || "Sem título";
     document.getElementById("content").textContent = note.texto || "";
 
-  } catch (error) {
-    console.error(error);
-    document.body.innerHTML = "<p>Erro ao carregar a nota.</p>";
-  }
+  } 
 }
 
 loadNote();
