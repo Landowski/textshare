@@ -52,11 +52,13 @@ async function loadNotes() {
   const snapshot = await getDocs(notesCol);
   notesList.innerHTML = "";
   snapshot.forEach(docSnap => {
-    const div = document.createElement("div");
-    div.textContent = `Nota ${docSnap.id.substring(0, 5)}`;
-    div.onclick = () => openNote(docSnap.id);
-    notesList.appendChild(div);
-  });
+  const note = docSnap.data();
+  const div = document.createElement("div");
+  div.id = `note-item-${docSnap.id}`; // Para atualizar depois
+  div.textContent = note.titulo || `Nota ${docSnap.id.substring(0, 5)}`;
+  div.onclick = () => openNote(docSnap.id);
+  notesList.appendChild(div);
+});
 }
 
 async function openNote(id) {
@@ -67,6 +69,7 @@ async function openNote(id) {
 
   document.getElementById("home").style.display = "none";
   document.getElementById("editor").style.display = "block";
+  document.getElementById("note-title").value = note.titulo || "";
   document.getElementById("note-content").value = note.texto;
   document.getElementById("public-toggle").checked = note.publica;
   document.getElementById("public-toggle").disabled = !isPro;
@@ -87,6 +90,14 @@ document.getElementById("note-content").addEventListener("input", debounce(async
   if (!currentNoteId) return;
   const noteRef = doc(db, "users", user.uid, "notes", currentNoteId);
   await updateDoc(noteRef, { texto: e.target.value });
+}, 500));
+
+document.getElementById("note-title").addEventListener("input", debounce(async (e) => {
+  if (!currentNoteId) return;
+  const noteRef = doc(db, "users", user.uid, "notes", currentNoteId);
+  await updateDoc(noteRef, { titulo: e.target.value });
+  // Atualiza o título na sidebar em tempo real se quiser:
+  updateSidebarTitle(currentNoteId, e.target.value);
 }, 500));
 
 document.getElementById("public-toggle").addEventListener("change", async (e) => {
