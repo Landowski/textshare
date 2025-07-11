@@ -100,6 +100,13 @@ document.getElementById("note-title").addEventListener("input", debounce(async (
   updateSidebarTitle(currentNoteId, e.target.value);
 }, 500));
 
+function updateSidebarTitle(noteId, newTitle) {
+  const item = document.getElementById(`note-item-${noteId}`);
+  if (item) {
+    item.textContent = newTitle || `Nota ${noteId.substring(0, 5)}`;
+  }
+}
+
 document.getElementById("public-toggle").addEventListener("change", async (e) => {
   if (!currentNoteId) return;
   const noteRef = doc(db, "users", user.uid, "notes", currentNoteId);
