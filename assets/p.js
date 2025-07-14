@@ -57,8 +57,9 @@ async function loadNote() {
     document.title = note.titulo + " - Textshare" || "Sem título - Textshare";
     document.getElementById("note-title").textContent = note.titulo || "Sem título";
     document.getElementById("content").textContent = note.texto || "";
-} catch (error) {
+  } catch (error) {
     document.getElementById("content").textContent = "Texto inválido (erro).";
   }
+}
   
 loadNote();
