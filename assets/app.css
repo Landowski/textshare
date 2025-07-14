@@ -185,12 +185,13 @@ button {
   border-right: 1px solid transparent;
   border-radius: 0px;
   border-bottom: 0px;
-  padding: 5px 10px;
+  padding: 5px 0px 5px 0px;
 }
 
 #note-title:focus {
   border-color: #c7c7c7;
   background-color: #f7f7f7;
+  padding: 5px 0px 5px 5px;
 }
 
 #editor textarea {
