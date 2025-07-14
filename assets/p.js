@@ -59,7 +59,12 @@ async function loadNote() {
     document.getElementById("content").textContent = note.texto || "";
 
   } catch (error) {
-    document.getElementById("content").textContent = "Erro.";
+    // 👈 Verifica se é erro de permissão
+    if (error.code === 'permission-denied') {
+      document.getElementById("content").textContent = "Este texto é privado.";
+    } else {
+      document.getElementById("content").textContent = "Erro. ID inválido ou excluído.";
+    }
   }
 }
   
