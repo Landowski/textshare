@@ -25,11 +25,13 @@ body {
 }
 
 h1 {
+  display: inline-block;
   font-size: 20px;
-  font-weight: bold;
-  padding: 0;
   margin: 0;
-  margin-bottom: 30px;
+  padding: 4px 7px;
+  border: 1px solid #c7c7c7;
+  border-bottom: 0px;
+  background-color: #fff;
 }
 
 #content {
