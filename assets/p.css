@@ -24,7 +24,7 @@ body {
   background: #f8f8f8;
 }
 
-.content {
+#content {
   max-width: 800px;
   max-height: 800px;
   min-height: 400px;
