@@ -183,10 +183,10 @@ document.getElementById("public-toggle").addEventListener("change", async (e) =>
 
   if (e.target.checked) {
     shareLinkDiv.style.display = "flex";
-    ("Texto compartilhado publicamente");
+    showToast("Texto compartilhado publicamente", "azul");
   } else {
     shareLinkDiv.style.display = "none";
-    ("Texto privado");
+    showToast("Texto privado", "azul");
   }
 });
 
@@ -195,7 +195,7 @@ document.getElementById("delete-note").addEventListener("click", async () => {
   if (confirm("Deseja excluir esta nota?")) {
     const noteRef = doc(db, "users", user.uid, "notes", currentNoteId);
     await deleteDoc(noteRef);
-    showToast("Texto excluído");
+    showToast("Texto excluído", "vermelho");
     document.getElementById("editor").style.display = "none";
     document.getElementById("home").style.display = "flex";
     loadNotes();
@@ -210,22 +210,13 @@ logo.addEventListener("click", () => {
   document.querySelectorAll("#notes-list div").forEach(div => div.classList.remove("selected"));
 });
 
-/*
-function showToast(msg) {
-  const toast = document.getElementById("toast");
-  toast.textContent = msg;
-  toast.style.display = "block";
-  setTimeout(() => {
-    toast.style.display = "none";
-  }, 3000);
-}
-*/
-
 function showToast(msg, fundo) {
     const cores = {
+        azul: '#0066ff',
+        preto: '#111',
         vermelho: '#FF4949',
         verde: '#13CE66',
-        preto: '#01131c'
+        amarelo: '#FFC82C'
     };
     
     let divToast = document.createElement('div');
@@ -246,6 +237,6 @@ function showToast(msg, fundo) {
 document.getElementById("copy").addEventListener("click", () => {
   const shareLink = document.getElementById("share-link").textContent;
   navigator.clipboard.writeText(shareLink).then(() => {
-    showToast("Link copiado!", 'vermelho');
+    showToast("Link copiado!", 'preto');
   })
 });
