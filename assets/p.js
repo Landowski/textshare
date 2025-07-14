@@ -58,8 +58,6 @@ async function loadNote() {
     document.getElementById("note-title").textContent = note.titulo || "Sem título";
     document.getElementById("content").textContent = note.texto || "";
 
-  } catch (error) {
-    document.getElementById("content").textContent = "Erro.";
   }
 }
 
