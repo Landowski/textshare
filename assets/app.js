@@ -56,6 +56,7 @@ newNoteBtn.addEventListener("click", async () => {
   });
   loadNotes();
   openNote(docRef.id);
+  showToast("Nova nota criada", "verde");
 });
 
 async function loadNotes() {
