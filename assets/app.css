@@ -178,20 +178,15 @@ button {
   font-size: 18px;
   font-weight: bold;
   outline: none;
-  background-color: #f5f5f5;
+  background-color: #f7f7f7;
   border: 1px solid #c7c7c7;
   border-radius: 0px;
   border-bottom: 0px;
   padding: 5px 10px;
 }
 
-#note-title:hover {
-  outline-color: #ebebeb; 
-}
-
 #note-title:focus {
-  outline-color: #ebebeb;
-  background-color: #ebebeb;
+  background-color: #f0f0f0;
 }
 
 #editor textarea {
