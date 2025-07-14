@@ -232,7 +232,7 @@ function showToast(msg, fundo) {
         setTimeout(function() {
             document.getElementsByTagName('body')[0].removeChild(divToast);
         }, 600);
-    }, 3000);
+    }, 2500);
 }
 
 document.getElementById("copy").addEventListener("click", () => {
