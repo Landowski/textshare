@@ -12,6 +12,8 @@ const firebaseConfig = {
   appId: "1:800854294565:web:bcda3e1627ef27e5f1bfcc"
 };
 
+const loadingMessage = document.getElementById("loading-message");
+
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
@@ -31,6 +33,7 @@ onAuthStateChanged(auth, async (u) => {
   isPro = userDoc.data().assinante;
 
   loadNotes();
+  loadingMessage.style.display = "none";
 });
 
 const notesList = document.getElementById("notes-list");
@@ -39,11 +42,12 @@ const newNoteBtn = document.getElementById("new-note");
 newNoteBtn.addEventListener("click", async () => {
   const notesCol = collection(db, "users", user.uid, "notes");
   const docRef = await addDoc(notesCol, {
-    titulo: `Nota ${Math.random().toString(36).substring(2, 7)}`,
-    texto: "",
-    publica: !isPro,
-    userId: user.uid
-  });
+  titulo: `Nota ${Math.random().toString(36).substring(2, 7)}`,
+  texto: "",
+  publica: true,
+  userId: user.uid,
+  ordem: Date.now() // campo de ordem
+});
 
   // 👇 Cria também o index auxiliar
   const notesIndexRef = doc(db, "notesIndex", docRef.id);
@@ -57,15 +61,45 @@ newNoteBtn.addEventListener("click", async () => {
 async function loadNotes() {
   const notesCol = collection(db, "users", user.uid, "notes");
   const snapshot = await getDocs(notesCol);
-  notesList.innerHTML = "";
+
+  // Cria array e ordena
+  const notesArray = [];
   snapshot.forEach(docSnap => {
-  const note = docSnap.data();
-  const div = document.createElement("div");
-  div.id = `note-item-${docSnap.id}`; // Para atualizar depois
-  div.textContent = note.titulo || `Nota ${docSnap.id.substring(0, 5)}`;
-  div.onclick = () => openNote(docSnap.id);
-  notesList.appendChild(div);
-});
+    const note = docSnap.data();
+    notesArray.push({
+      id: docSnap.id,
+      titulo: note.titulo || `Nota ${docSnap.id.substring(0, 5)}`,
+      ordem: note.ordem || 0
+    });
+  });
+
+  notesArray.sort((a, b) => a.ordem - b.ordem);
+
+  notesList.innerHTML = "";
+  notesArray.forEach(note => {
+    const div = document.createElement("div");
+    div.id = `note-item-${note.id}`;
+    div.dataset.id = note.id; // Necessário para sortable
+    div.textContent = note.titulo;
+    div.onclick = () => openNote(note.id);
+    notesList.appendChild(div);
+    notesList.style.display = "flex";
+  });
+
+  // Inicializa SortableJS
+  Sortable.create(notesList, {
+    animation: 150,
+    onEnd: saveNewOrder
+  });
+}
+
+async function saveNewOrder() {
+  const items = document.querySelectorAll("#notes-list div");
+  for (let i = 0; i < items.length; i++) {
+    const noteId = items[i].dataset.id;
+    const noteRef = doc(db, "users", user.uid, "notes", noteId);
+    await updateDoc(noteRef, { ordem: i });
+  }
 }
 
 async function openNote(id) {
@@ -75,14 +109,29 @@ async function openNote(id) {
   const note = noteDoc.data();
 
   document.getElementById("home").style.display = "none";
-  document.getElementById("editor").style.display = "block";
+  document.getElementById("editor").style.display = "flex";
   document.getElementById("note-title").value = note.titulo || "";
   document.getElementById("note-content").value = note.texto;
   document.getElementById("public-toggle").checked = note.publica;
-  document.getElementById("public-toggle").disabled = !isPro;
 
-  const shareLink = `${window.location.origin}/textshare/p.html?id=${id}`;
-  document.getElementById("share-link").innerHTML = `<a href="${shareLink}" target="_blank">${shareLink}</a>`;
+  const shareLink = `${window.location.origin}/p.html?id=${id}`;
+  const shareLinkDiv = document.getElementById("link-container");
+  let link = document.getElementById("share-link");
+  link.innerHTML = `<a href="${shareLink}" target="_blank">${shareLink}</a>`;
+
+  // ✅ Mostra ou esconde o link com base no toggle
+  if (note.publica) {
+    shareLinkDiv.style.display = "flex";
+  } else {
+    shareLinkDiv.style.display = "none";
+  }
+
+  // Marca selected na sidebar
+  document.querySelectorAll("#notes-list div").forEach(div => div.classList.remove("selected"));
+  const selectedItem = document.getElementById(`note-item-${id}`);
+  if (selectedItem) {
+    selectedItem.classList.add("selected");
+  }
 }
 
 const debounce = (fn, delay) => {
@@ -116,8 +165,29 @@ function updateSidebarTitle(noteId, newTitle) {
 
 document.getElementById("public-toggle").addEventListener("change", async (e) => {
   if (!currentNoteId) return;
+
+  const shareLinkDiv = document.getElementById("link-container");
+  const isTogglingToPrivate = !e.target.checked; // true se está tentando deixar privado
+
+  // 🔧 CORREÇÃO: Se usuário FREE tenta deixar PRIVADO
+  if (!isPro && isTogglingToPrivate) {
+    showToast("Assine o plano Pro para deixar o texto privado", "verde");
+    e.target.checked = true; // Força toggle voltar para ON
+    shareLinkDiv.style.display = "flex";
+    return;
+  }
+
+  // ✅ Usuário PRO ou está deixando público - pode prosseguir
   const noteRef = doc(db, "users", user.uid, "notes", currentNoteId);
   await updateDoc(noteRef, { publica: e.target.checked });
+
+  if (e.target.checked) {
+    shareLinkDiv.style.display = "flex";
+    showToast("Texto compartilhado publicamente");
+  } else {
+    shareLinkDiv.style.display = "none";
+    showToast("Texto privado");
+  }
 });
 
 document.getElementById("delete-note").addEventListener("click", async () => {
@@ -125,8 +195,54 @@ document.getElementById("delete-note").addEventListener("click", async () => {
   if (confirm("Deseja excluir esta nota?")) {
     const noteRef = doc(db, "users", user.uid, "notes", currentNoteId);
     await deleteDoc(noteRef);
+    showToast("Texto excluído");
     document.getElementById("editor").style.display = "none";
-    document.getElementById("home").style.display = "block";
+    document.getElementById("home").style.display = "flex";
     loadNotes();
   }
+});
+
+const logo = document.getElementById("logo");
+logo.addEventListener("click", () => {
+  editor.style.display = "none";
+  home.style.display = "flex";
+  // ✅ Remove 'selected' de todas as notas
+  document.querySelectorAll("#notes-list div").forEach(div => div.classList.remove("selected"));
+});
+
+/*
+function showToast(msg) {
+  const toast = document.getElementById("toast");
+  toast.textContent = msg;
+  toast.style.display = "block";
+  setTimeout(() => {
+    toast.style.display = "none";
+  }, 3000);
+}
+*/
+
+function showToast(msg, fundo) {
+    const cores = {
+        vermelho: '#FF4949',
+        verde: '#13CE66',
+        preto: '#01131c'
+    };
+    let divToast = document.createElement('div');
+    divToast.innerHTML = `<div id="toast" style="background-color: ${cores[fundo] || 'white'}">${msg}</div>`;
+    document.getElementsByTagName('body')[0].appendChild(divToast);
+    var notifica = document.getElementById("toast");
+    notifica.className = "show"; 
+    setTimeout(function() {
+        notifica.className = "show hide";
+        setTimeout(function() {
+            document.getElementsByTagName('body')[0].removeChild(divToast);
+        }, 600);
+    }, 3800);
+}
+
+document.getElementById("copy").addEventListener("click", () => {
+  const shareLink = document.getElementById("share-link").textContent;
+  navigator.clipboard.writeText(shareLink).then(() => {
+    showToast("Link copiado!", 'vermelho');
+  })
 });
