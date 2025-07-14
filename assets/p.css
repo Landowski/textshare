@@ -55,3 +55,12 @@ body {
   resize: vertical;
   cursor: auto;
 }
+
+.footer {
+  width: 100%;
+  text-align: center;
+}
+
+.footer a {
+  color: #0066ff;
+}
