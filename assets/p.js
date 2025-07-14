@@ -24,7 +24,6 @@ if (!noteId) {
 }
 
 async function loadNote() {
-  try {
     // 1️⃣ Pega o userId no índice
     const indexRef = doc(db, "notesIndex", noteId);
     const indexSnap = await getDoc(indexRef);
@@ -57,10 +56,6 @@ async function loadNote() {
     document.title = note.titulo + " - Textshare" || "Sem título - Textshare";
     document.getElementById("note-title").textContent = note.titulo || "Sem título";
     document.getElementById("content").textContent = note.texto || "";
-
-  } catch (error) {
-    document.getElementById("content").textContent = "Este texto é privado.";
-  }
 }
 
 loadNote();
