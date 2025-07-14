@@ -183,10 +183,10 @@ document.getElementById("public-toggle").addEventListener("change", async (e) =>
 
   if (e.target.checked) {
     shareLinkDiv.style.display = "flex";
-    showToast("Texto compartilhado publicamente");
+    ("Texto compartilhado publicamente");
   } else {
     shareLinkDiv.style.display = "none";
-    showToast("Texto privado");
+    ("Texto privado");
   }
 });
 
@@ -221,17 +221,20 @@ function showToast(msg) {
 }
 */
 
-function showToast(msg, fundo) {
+function showToast(msg, fundo = 'preto') {
     const cores = {
         vermelho: '#FF4949',
         verde: '#13CE66',
         preto: '#01131c'
     };
+    
     let divToast = document.createElement('div');
-    divToast.innerHTML = `<div id="toast" style="background-color: ${cores[fundo] || 'white'}">${msg}</div>`;
+    divToast.innerHTML = `<div id="toast" style="background-color: ${cores[fundo]}">${msg}</div>`;
     document.getElementsByTagName('body')[0].appendChild(divToast);
+    
     var notifica = document.getElementById("toast");
     notifica.className = "show"; 
+    
     setTimeout(function() {
         notifica.className = "show hide";
         setTimeout(function() {
