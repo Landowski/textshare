@@ -221,7 +221,7 @@ function showToast(msg) {
 }
 */
 
-function showToast(msg, fundo = 'preto') {
+function showToast(msg, fundo) {
     const cores = {
         vermelho: '#FF4949',
         verde: '#13CE66',
