@@ -38,33 +38,40 @@ async function loadNote() {
 
     // 2️⃣ Busca a nota na subcoleção correta
     const noteRef = doc(db, "users", userId, "notes", noteId);
-    const noteSnap = await getDoc(noteRef);
+    
+    try {
+      const noteSnap = await getDoc(noteRef);
 
-    if (!noteSnap.exists()) {
-      document.getElementById("content").textContent = "Texto não encontrado.";
-      return;
+      if (!noteSnap.exists()) {
+        document.getElementById("content").textContent = "Esta nota não existe.";
+        return;
+      }
+
+      const note = noteSnap.data();
+
+      // 3️⃣ Verifica se é pública
+      if (!note.publica) {
+        document.getElementById("content").textContent = "Este texto é privado.";
+        return;
+      }
+
+      // 4️⃣ Mostra título + conteúdo
+      document.title = note.titulo + " - Textshare" || "Sem título - Textshare";
+      document.getElementById("note-title").textContent = note.titulo || "Sem título";
+      document.getElementById("content").textContent = note.texto || "";
+
+    } catch (noteError) {
+      // 👈 Erro específico ao acessar a nota
+      if (noteError.code === 'permission-denied') {
+        document.getElementById("content").textContent = "Este texto é privado.";
+      } else {
+        document.getElementById("content").textContent = "Esta nota não existe.";
+      }
     }
-
-    const note = noteSnap.data();
-
-    // 3️⃣ Verifica se é pública
-    if (!note.publica) {
-      document.getElementById("content").textContent = "Este texto é privado.";
-      return;
-    }
-
-    // 4️⃣ Mostra título + conteúdo
-    document.title = note.titulo + " - Textshare" || "Sem título - Textshare";
-    document.getElementById("note-title").textContent = note.titulo || "Sem título";
-    document.getElementById("content").textContent = note.texto || "";
 
   } catch (error) {
-    // 👈 Verifica se é erro de permissão
-    if (error.code === 'permission-denied') {
-      document.getElementById("content").textContent = "Este texto é privado.";
-    } else {
-      document.getElementById("content").textContent = "Erro. ID inválido ou excluído.";
-    }
+    // 👈 Erro geral (problemas com o índice, conexão, etc.)
+    document.getElementById("content").textContent = "Erro ao carregar o texto.";
   }
 }
   
