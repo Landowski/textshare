@@ -194,12 +194,23 @@ document.getElementById("public-toggle").addEventListener("change", async (e) =>
 document.getElementById("delete-note").addEventListener("click", async () => {
   if (!currentNoteId) return;
   if (confirm("Deseja excluir esta nota?")) {
-    const noteRef = doc(db, "users", user.uid, "notes", currentNoteId);
-    await deleteDoc(noteRef);
-    showToast("Texto excluído", "vermelho");
-    document.getElementById("editor").style.display = "none";
-    document.getElementById("home").style.display = "flex";
-    loadNotes();
+    try {
+      // 1️⃣ Exclui a nota
+      const noteRef = doc(db, "users", user.uid, "notes", currentNoteId);
+      await deleteDoc(noteRef);
+      
+      // 2️⃣ Exclui o índice
+      const indexRef = doc(db, "notesIndex", currentNoteId);
+      await deleteDoc(indexRef);
+      
+      showToast("Texto excluído", "vermelho");
+      document.getElementById("editor").style.display = "none";
+      document.getElementById("home").style.display = "flex";
+      loadNotes();
+    } catch (error) {
+      console.error("Erro ao excluir:", error);
+      showToast("Erro ao excluir texto", "vermelho");
+    }
   }
 });
 
