@@ -20,8 +20,7 @@ const params = new URLSearchParams(window.location.search);
 const noteId = params.get('id');
 
 if (!noteId) {
-  document.body.innerHTML = "<p>ID da nota não encontrado na URL.</p>";
-  throw new Error("ID inválido");
+  document.getElementById("content").textContent = "ID não encontrado.";
 }
 
 async function loadNote() {
@@ -31,7 +30,7 @@ async function loadNote() {
     const indexSnap = await getDoc(indexRef);
 
     if (!indexSnap.exists()) {
-      document.body.innerHTML = "<p>Nota não encontrada.</p>";
+      document.getElementById("content").textContent = "Texto não encontrado.";
       return;
     }
 
@@ -42,7 +41,7 @@ async function loadNote() {
     const noteSnap = await getDoc(noteRef);
 
     if (!noteSnap.exists()) {
-      document.body.innerHTML = "<p>Nota não encontrada.</p>";
+      document.getElementById("content").textContent = "Texto não encontrado.";
       return;
     }
 
@@ -50,7 +49,7 @@ async function loadNote() {
 
     // 3️⃣ Verifica se é pública
     if (!note.publica) {
-      document.body.innerHTML = "<p>Esta nota é privada.</p>";
+      document.getElementById("content").textContent = "Este texto é privado.";
       return;
     }
 
@@ -60,7 +59,7 @@ async function loadNote() {
     document.getElementById("content").textContent = note.texto || "";
 
   } catch (error) {
-    document.body.innerHTML = "<p>Esta nota é privada.</p>";
+    document.getElementById("content").textContent = "Erro.";
   }
 }
 
