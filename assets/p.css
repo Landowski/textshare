@@ -11,16 +11,16 @@
 }
 
 * {
-   box-sizing: border-box;
-   transition: all .2s ease;
+  box-sizing: border-box;
+  transition: all .2s ease;
 }
 
 body {
   font-family: "Roboto", sans-serif;
   color: #111;
   max-width: 800px;
-  margin: 0 auto;
-  padding: 20px;
+  margin: 0px;
+  padding: 0px;
   background: #f8f8f8;
 }
 
